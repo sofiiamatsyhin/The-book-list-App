@@ -16,6 +16,17 @@ UI.prototype.addBookToList = function(book) {
     <td><a href="#" class="delete">X</a></td>`;
     list.appendChild(row);
 }
+UI.prototype.showAlert = function(message, className) {
+    const div = document.createElement('div');
+    div.className = `alert ${className}`;
+    div.appendChild(document.createTextNode(message));
+    const container = document.querySelector('.container');
+    const form = document.querySelector('#book-form');
+    container.insertBefore(div, form);
+    setTimeout(function() {
+        document.querySelector('.alert').remove();
+    },3000);
+}
 UI.prototype.clearFields = function() {
     document.querySelector('#title').value = '';
     document.querySelector('#author').value = '';
@@ -28,7 +39,12 @@ document.querySelector('#book-form').addEventListener('submit', function(e) {
 
     const book = new Book(title, author, description);
     const ui = new UI();
-    ui.addBookToList(book);
-    ui.clearFields();
+    if(title === '' || author === '' || description === '') {
+        ui.showAlert('Please, fill in all fields', 'error');
+    } else {
+        ui.addBookToList(book);
+        ui.showAlert('Book Added!', 'success');
+        ui.clearFields();
+    }
     e.preventDefault();
 });
